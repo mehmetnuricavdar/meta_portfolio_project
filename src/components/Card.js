@@ -6,15 +6,15 @@ import React from "react";
 const Card = ({ title, description, imageSrc }) => {
   return (
     <VStack
-      color="#000"
-      backgroundColor="#fff"
+      color="black"
+      backgroundColor="white"
       cursor="pointer"
       borderRadius="xl"
     >
       <Image borderRadius="xl" src={imageSrc} alt={title} />
       <VStack spacing={4} p={4} alignItems="flex-start">
         <HStack justifyContent="space-between" alignItems="center">
-          <Heading as="h4" size="lg">
+          <Heading as="h3" size="md">
             {title}
           </Heading>
         </HStack>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -33,6 +33,32 @@ const socials = [
 ];
 
 const Header = () => {
+  const [isHidden, setIsHidden] = useState();
+
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset;
+
+    const updateScrollDirection = () => {
+      const scrollY = window.pageYOffset;
+      const goingDown = scrollY > lastScrollY;
+      const stateNotMatched = goingDown !== isHidden;
+      const scrollDownTooFast = scrollY - lastScrollY > 5;
+      const scrollUpTooFast = scrollY - lastScrollY < -5;
+
+      const shouldToggleHeader =
+        stateNotMatched && (scrollDownTooFast || scrollUpTooFast);
+      if (shouldToggleHeader) {
+        setIsHidden(goingDown);
+      }
+      lastScrollY = scrollY > 0 ? scrollY : 0;
+    };
+
+    window.addEventListener("scroll", updateScrollDirection);
+    return () => {
+      window.removeEventListener("scroll", updateScrollDirection);
+    };
+  }, [isHidden]);
+
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
@@ -46,6 +72,7 @@ const Header = () => {
 
   return (
     <Box
+      style={{ top: isHidden ? "-200px" : 0 }}
       position="fixed"
       top={0}
       left={0}
@@ -55,6 +82,7 @@ const Header = () => {
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      zIndex={2}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -72,7 +100,7 @@ const Header = () => {
                   rel="noopener noreferrer"
                   key={social.url}
                 >
-                  <FontAwesomeIcon icon={social.icon} size="2x"/>
+                  <FontAwesomeIcon icon={social.icon} size="2x" />
                 </a>
               ))}
             </HStack>

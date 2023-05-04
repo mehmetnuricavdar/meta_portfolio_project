@@ -29,11 +29,12 @@ const ContactMeSection = () => {
       comment: "",
     },
     onSubmit: async (values) => {
-      await submit(values);
+      await submit("", values);
       if (response.type === "error") {
         onOpen(response.type, response.message);
       } else {
         onOpen(response.type, response.message);
+        formik.resetForm();
       }
     },
     validationSchema: Yup.object({
@@ -42,7 +43,9 @@ const ContactMeSection = () => {
         .email("Invalid email address")
         .required("Email is required"),
       type: Yup.string().required("Enquiry type is required"),
-      comment: Yup.string().required("Comment is required"),
+      comment: Yup.string()
+        .required("Comment is required")
+        .min(25, "Must be at least 25 character"),
     }),
   });
 
@@ -50,6 +53,17 @@ const ContactMeSection = () => {
     e.preventDefault();
     formik.handleSubmit();
   };
+
+  /* 
+  useEffect(() => {
+    if (response) {
+      onOpen(response?.type, response?.message)
+      if (response?.type === "success") {
+        formik.resetForm()
+      }
+    }
+  }, [response])
+  */
 
   return (
     <FullScreenSection
